@@ -108,11 +108,37 @@ function generateCart() {
     });
     
     cleanCart();
+    console.log(cart);
 }
 
 // Exercise 5
 function applyPromotionsCart() {
     // Apply promotions to each item in the array "cart"
+
+    // Si l'usuari compra 3 o més ampolles d'oli, el preu del producte descendeix a 10 euros.
+    // Quan es compren 10 o més productes per a fer pastís, el seu preu es rebaixa a 2/3.
+    let priceOilOffer = 10;
+    let percentCupcakeOffer = 2 / 3;
+
+    cart.forEach(function(product) {
+        //Productos en carrito y tienen oferta
+        if(product.offer != undefined && product.offer != null) {
+            if(product.quantity >= product.offer.number) {
+                switch (product.id) {
+                    case 1:
+                        product.subtotalWithDiscount = product.quantity * priceOilOffer;
+                        break;
+                    case 3:
+                        product.subtotalWithDiscount = product.quantity * product.price * percentCupcakeOffer;
+                        break;
+                }
+            }
+            // Codigo para utilizar datos array objetos
+            // product.subtotal = product.quantity * product.price;
+            // product.subtotalWithDiscount = product.quantity * (product.price * (1 - product.offer.percent / 100));
+        }
+    });
+    console.log(cart);
 }
 
 // Exercise 6
