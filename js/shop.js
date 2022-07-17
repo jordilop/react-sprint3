@@ -144,6 +144,40 @@ function applyPromotionsCart() {
 // Exercise 6
 function printCart() {
     // Fill the shopping cart modal manipulating the shopping cart dom
+    generateCart();
+    applyPromotionsCart();
+
+    let cartList = document.getElementById("cart_list");
+    let totalPrice = document.getElementById("total_price");
+    let totalCart = 0;
+    cartList.innerHTML = "";
+
+    cart.forEach(function(product) {
+        let productList =   `<tr>
+                            <th scope="row">${product.name}</th>`;
+        let productSubtotal = product.price * product.quantity;
+
+        if(product.subtotalWithDiscount != undefined && product.subtotalWithDiscount != null) {
+            let priceWithDiscount = product.subtotalWithDiscount / product.quantity;
+
+            productList +=  `<td>${priceWithDiscount.toFixed(2)}
+                            <br>
+                            <span class="text-decoration-line-through">${product.price}</span></td>
+                            <td>${product.quantity}</td>
+                            <td>${product.subtotalWithDiscount.toFixed(2)}
+                            </tr>`;
+            totalCart += Number(product.subtotalWithDiscount.toFixed(2));
+        } else {
+            productList +=  `<td>${product.price}</td>
+                            <td>${product.quantity}</td>
+                            <td>${productSubtotal}</td>
+                            </tr>`;
+            totalCart += Number(productSubtotal);
+        }
+        cartList.innerHTML += productList;
+    });
+
+    totalPrice.innerHTML = totalCart;
 }
 
 
