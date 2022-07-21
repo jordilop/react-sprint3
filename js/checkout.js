@@ -1,28 +1,54 @@
+// regExp Password https://www.ocpsoft.org/tutorials/regular-expressions/password-regular-expression/
 
-// Exercise 6
-function validate() {
-	var error = 0;
-	// Get the input fields
-	var fName = document.getElementById("fName");
-	var fEmail = document.getElementById("fEmail");
+let nodeList = [
+	{
+		id: "fName",
+		regExp: /^[A-zÀ-ú\s]{3,}$/
+	},
+	{
+		id: "fEmail",
+		regExp: /^[\w.-]+@[\w.-]+\.\w{2,}$/
+	},
+	{
+		id: "fAddress",
+		regExp: /.{3,}/
+	},
+	{
+		id: "fLastN",
+		regExp: /^[A-zÀ-ú\s]{3,}$/
+	},
+	{
+		id: "fPassword",
+		regExp: /^(?=.*[0-9])(?=.*[A-z]).{4,8}$/
+	},
+	{
+		id: "fPhone",
+		regExp: /^[0-9]{9}$/
+	},
 
-	// Get the error elements
-	var errorName = document.getElementById("errorName");
-	var errorEmail = document.getElementById("errorEmail");  
-	
-	// Validate fields entered by the user: name, phone, password, and email
-	if(fName.value == ""){
-		error++;
-	}
+];
 
-	if(fEmail.value == ""){
-		error++;
-	}
-	 
-	if(error>0){
-		alert("Error");
-	}else{
-		alert("OK");
-	}
+//Event without reload
+const form = document.getElementById('form');
+form.addEventListener('submit', validate);
 
+function inputCheck(element) {
+	let index = nodeList.findIndex(nodeList => nodeList.id == element.id);
+	let checkRegExp = nodeList[index].regExp.test(element.value);
+	return checkRegExp;
+}
+
+// Exercise 7
+function validate(event) {
+	const formList = document.querySelectorAll("input");
+	formList.forEach(function (element) {
+		if (!inputCheck(element)) {
+			element.classList.add("is-invalid");
+			element.classList.remove("is-valid");
+		} else {
+			element.classList.add("is-valid");
+			element.classList.remove("is-invalid");
+		}
+	});
+	event.preventDefault();
 }
