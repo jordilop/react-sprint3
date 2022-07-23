@@ -89,11 +89,16 @@ function cleanCart() {
 // Exercise 3
 function calculateTotal() {
     // Calculate total price of the cart using the "cartList" array
-    let totalPrice = 0;
-    cartList.forEach(function (product) {
-        totalPrice += product.price;
+    // let totalPrice = 0;
+    // cartList.forEach(function (product) {
+    //     totalPrice += product.price;
+    // });
+    let total = 0;
+    cart.forEach(function (product) {
+        product.subtotal = product.quantity * product.price;
+        product.hasOwnProperty('subtotalWithDiscount') ? total += product.subtotalWithDiscount : total += product.subtotal;
     });
-    console.log(totalPrice);
+    return(total.toFixed(2));
 }
 
 // Exercise 4
@@ -124,7 +129,8 @@ function applyPromotionsCart() {
 
     cart.forEach(function (product) {
         //Productos en carrito y tienen oferta
-        if (product.offer != undefined && product.offer != null) {
+        // if (product.offer != undefined && product.offer != null) {
+        if(product.hasOwnProperty('offer')) {
             if (product.quantity >= product.offer.number) {
                 switch (product.id) {
                     case 1:
@@ -134,10 +140,9 @@ function applyPromotionsCart() {
                         product.subtotalWithDiscount = product.quantity * product.price * percentCupcakeOffer;
                         break;
                 }
+            } else {
+                delete product.subtotalWithDiscount;
             }
-            // Codigo para utilizar datos array objetos
-            // product.subtotal = product.quantity * product.price;
-            // product.subtotalWithDiscount = product.quantity * (product.price * (1 - product.offer.percent / 100));
         }
     });
     //console.log(cart);
@@ -152,7 +157,7 @@ function printCart() {
 
     let cartList = document.getElementById("cart_list");
     let totalPrice = document.getElementById("total_price");
-    let totalCart = 0;
+    totalPrice.innerHTML = calculateTotal();
     cartList.innerHTML = "";
 
     cart.forEach(function (product) {
@@ -160,27 +165,24 @@ function printCart() {
                             <th scope="row">${product.name}</th>`;
         let productSubtotal = product.price * product.quantity;
 
-        if (product.subtotalWithDiscount != undefined && product.subtotalWithDiscount != null) {
+        if (product.hasOwnProperty('subtotalWithDiscount')) {
             let priceWithDiscount = product.subtotalWithDiscount / product.quantity;
 
             productList += `<td>${priceWithDiscount.toFixed(2)}
                             <br>
                             <span class="text-decoration-line-through">${product.price}</span></td>
-                            <td>${product.quantity}</td>
-                            <td>${product.subtotalWithDiscount.toFixed(2)}
-                            </tr>`;
-            totalCart += Number(product.subtotalWithDiscount.toFixed(2));
+                            <td><a href="javascript:void(0)" onclick="removeFromCart(${product.id});printCart();"><i class="fa fa-minus-square btn" aria-hidden="true"></i></a> ${product.quantity} <a href="javascript:void(0)" onclick="addToCart(${product.id});printCart()"><i class="fa fa-plus-square btn" aria-hidden="true"></i></a></td>
+                            <td>${product.subtotalWithDiscount.toFixed(2)}</td>
+                            `;
         } else {
             productList += `<td>${product.price}</td>
-                            <td>${product.quantity}</td>
+                            <td><a href="javascript:void(0)" onclick="removeFromCart(${product.id});printCart();"><i class="fa fa-minus-square btn" aria-hidden="true"></i></a> ${product.quantity} <a href="javascript:void(0)" onclick="addToCart(${product.id});printCart()"><i class="fa fa-plus-square btn" aria-hidden="true"></i></a></td>
                             <td>${productSubtotal}</td>
-                            </tr>`;
-            totalCart += Number(productSubtotal);
+                            `;
         }
+        productList += `</tr>`
         cartList.innerHTML += productList;
     });
-
-    totalPrice.innerHTML = totalCart;
 }
 
 
@@ -202,8 +204,8 @@ function addToCart(id) {
 
 // Exercise 9
 function removeFromCart(id) {
-    // 1. Loop for to the array products to get the item to add to cart
-    // 2. Add found product to the cartList array
+    let product = cart.find(products => products.id == id);
+    product.quantity != 1 ? product.quantity-- : cart.splice(cart.indexOf(product), 1);
 }
 
 function open_modal() {
